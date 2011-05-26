@@ -51,7 +51,7 @@ if (!class_exists('My_Recent_Posts_Widget'))
 				'desc' => __('Enter the widget title.'),
 				// field id		
 				'id' => 'title',
-				// field type ( text, checkbox,textarea,select,select-group)								
+				// field type ( text, checkbox, textarea, select, select-group)								
 				'type'=>'text',	
 				// class, rows, cols								
 				'class' => 'widefat',	

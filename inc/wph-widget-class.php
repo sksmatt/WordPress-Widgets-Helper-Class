@@ -44,7 +44,7 @@ if (!class_exists('WPH_Widget'))
 			// extract each arg to its own variable
 			extract( $args, EXTR_SKIP );
 			
-			//	no fields? then theres not much to do
+			// no fields? then theres not much to do
 			if (empty($fields)) return;
 						
 			// set the widget vars
