@@ -6,6 +6,7 @@
 * Version: 0.1
 * Author: Matt Varone
 * Author URI: http://twitter.com/sksmatt
+* License: GPL
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
