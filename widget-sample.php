@@ -30,43 +30,55 @@ if (!class_exists('My_Recent_Posts_Widget'))
 		
 			// Configure widget array
 			$args = array(
-				'label' => __('My Recent Posts'),								// Widget Backend label
-				'description' => __('My Recent Posts Widget Description'),		// Widget Backend Description
+				// Widget Backend label
+				'label' => __('My Recent Posts'),
+				// Widget Backend Description								
+				'description' => __('My Recent Posts Widget Description'),		
 			);
 		
 			// Configure the widget fields
 			// Example for: Title (text) and Amount of posts to show ( select box )
 		
-			$args['fields'] = array(							// fields array
+			// fields array
+			$args['fields'] = array(							
 			
 				// Title field
-				array(											
-				'name' => __('Title'),							// field name/label
-				'desc' => __('Enter the widget title.'),		// field description
-				'id' => 'title',								// field id
-				'type'=>'text',									// field type ( text, checkbox,textarea,select,select-group)
-				'class' => 'widefat',							// class, rows, cols
-				'std' => __( 'Recent Posts')					// default value
+				array(		
+				// field name/label									
+				'name' => __('Title'),		
+				// field description					
+				'desc' => __('Enter the widget title.'),
+				// field id		
+				'id' => 'title',
+				// field type ( text, checkbox,textarea,select,select-group)								
+				'type'=>'text',	
+				// class, rows, cols								
+				'class' => 'widefat',	
+				// default value						
+				'std' => __( 'Recent Posts')					
 				),
 			
 				// Amount Field
 				array(
-				'name' => __('Amount'),							// field name/label
-				'desc' => __('Select how many posts to show.'),	// field description
-				'id' => 'amount',								// field id
-				'type'=>'select',								// field type ( text, checkbox,textarea,select,select-group)
-				'fields' => array(								// selectbox fields
+				'name' => __('Amount'),							
+				'desc' => __('Select how many posts to show.'),
+				'id' => 'amount',							
+				'type'=>'select',				
+				// selectbox fields			
+				'fields' => array(								
 						array( 
-							'name'  => __('1 Post'),			// option name
-							'value' => '1' 						// option value
+							// option name
+							'name'  => __('1 Post'),
+							// option value			
+							'value' => '1' 						
 						),
 						array( 
-							'name'  => __('2 Posts'),			// option name
-							'value' => '2' 						// option value
+							'name'  => __('2 Posts'),			
+							'value' => '2' 					
 						),
 						array( 
-							'name'  => __('1 Post'),			// option name
-							'value' => '3'						// option value
+							'name'  => __('1 Post'),
+							'value' => '3'	
 						)
 					
 						// add more options
@@ -91,6 +103,7 @@ if (!class_exists('My_Recent_Posts_Widget'))
 				
 			// here you would get the most recent posts based on the selected amount: $instance['amount'] 
 			// Then return those posts on the $out variable ready for the output
+			
 			$out .= '<p>Hey There!</p>';
 
 			echo $out;
