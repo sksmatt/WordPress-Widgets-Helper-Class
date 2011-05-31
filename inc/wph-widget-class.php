@@ -36,6 +36,7 @@ if (!class_exists('WPH_Widget'))
 				'description' => __('My custom widget'),
 				'fields' => array(),
 				'options' => array()
+				'textdomain' => '',
 			);
 			
 			// parse and merge args with defaults
@@ -51,6 +52,9 @@ if (!class_exists('WPH_Widget'))
 			$this->label   = $label;
 			$this->slug    = sanitize_title($this->label);
 			$this->fields  = $fields;
+			
+			// set textdomain for internationalization 
+			( $textdomain ) ? $this->textdomain = $textdomain : $this->textdomain = $this->slug;
 			
 			// check options
 			$this->options = array('classname' => $this->slug, 'description' => $description);						
@@ -159,7 +163,7 @@ if (!class_exists('WPH_Widget'))
 
 		function create_field($key,$out = "")
 		{
-
+			// Set fields value
 			$slug	= $key['id'];
 			$std	= isset($key['std']) ? $key['std'] : "";
 			$value	= empty($this->instance[$slug]) ? $std : strip_tags($this->instance[$slug]);
@@ -167,7 +171,7 @@ if (!class_exists('WPH_Widget'))
 			$name 	= $this->get_field_name($slug);		
 
 			if ($key['type'] != 'checkbox')
-			$out .= '<p>'.$this->create_label($key['name'],$id).'<br/>';
+				$out .= '<p>'.$this->create_label($key['name'],$id).'<br/>';
 
 			switch ($key['type']) 
 			{
@@ -202,7 +206,7 @@ if (!class_exists('WPH_Widget'))
 					if ( isset($key['cols']))
 					$out .= 'cols="'.$key['cols'].'" ';
 
-					$out .= 'id="'.$id.'" name="'.$name.'">'.esc_attr__($value).'" ';
+					$out .= 'id="'.$id.'" name="'.$name.'">'.esc_html($value).'" ';
 
 					$out .= '</textarea>';
 
@@ -220,7 +224,7 @@ if (!class_exists('WPH_Widget'))
 
 					$out .= 'id="'.$id.'" name="'.$name.'" value="'.$std.'" ';
 
-					if ( esc_attr__($value) == $key['std'] )
+					if ( esc_attr($value) == $key['std'] )
 					$out .= ' checked="checked" ';			
 
 					$out .= ' /> ';
@@ -242,12 +246,12 @@ if (!class_exists('WPH_Widget'))
 						foreach ($key['fields'] as $field => $option) 
 						{
 
-							$out .= '<option value="'.$option['value'].'" ';
+							$out .= '<option value="'.esc_attr($option['value']).'" ';
 
-							if ( esc_attr__($value) == $option['value'] )
+							if ( esc_attr($value)== $option['value'] )
 							$out .= ' selected="selected" ';
 
-							$out .= '> '.$option['name'].'</option>';
+							$out .= '> '.esc_html( $option['name'] ).'</option>';
 
 						}
 
@@ -272,12 +276,12 @@ if (!class_exists('WPH_Widget'))
 
 							foreach ($fields as $field => $option) 
 							{
-								$out .= '<option value="'.$option['value'].'" ';
+								$out .= '<option value="'.esc_attr($option['value']).'" ';
 
-								if ( esc_attr__($value) == $option['value'] )
+								if ( esc_attr($value)== $option['value'] )
 								$out .= ' selected="selected" ';
 
-								$out .= '> '.$option['name'].'</option>';
+								$out .= '> '.esc_html( $option['name'] ).'</option>';
 							}
 
 							$out .= '</optgroup>';
@@ -291,7 +295,7 @@ if (!class_exists('WPH_Widget'))
 			}
 
 			if (isset($key['desc']))
-			$out .= '<br/><small class="description">'.$key['desc'].'</small>'; 
+			$out .= '<br/><small class="description">'._e( $key['desc'], $this->textdomain ).'</small>'; 
 
 			$out .= '</p>';
 
@@ -308,7 +312,7 @@ if (!class_exists('WPH_Widget'))
 
 		function create_label($name="",$id="")
 		{
-			return '<label for="'.$id.'">'.$name.':</label>';
+			return '<label for="'.$id.'">'._e( $name, $this->textdomain ).':</label>';
 		}		
 
 	} // class
