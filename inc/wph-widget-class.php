@@ -35,7 +35,7 @@ if (!class_exists('WPH_Widget'))
 				'label' => __('My Widget'),
 				'description' => __('My custom widget'),
 				'fields' => array(),
-				'options' => array()
+				'options' => array(),
 				'textdomain' => '',
 			);
 			
