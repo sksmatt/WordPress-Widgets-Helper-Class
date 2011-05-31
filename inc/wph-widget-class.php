@@ -116,12 +116,12 @@ if (!class_exists('WPH_Widget'))
 		function create_fields($out = "")
 		{
 
-			$out = $this->beforecreate_fields($out);
+			$out = $this->before_create_fields($out);
 
 			foreach ($this->fields as $key) 
 				$out .= $this->create_field($key);
 
-			$out = $this->aftercreate_fields($out);
+			$out = $this->after_create_fields($out);
 
 			return $out;
 		}
@@ -135,7 +135,7 @@ if (!class_exists('WPH_Widget'))
 		* @since 1.0
 		*/
 
-		function beforecreate_fields($out = "")
+		function before_create_fields($out = "")
 		{
 			return $out;
 		}
@@ -149,7 +149,7 @@ if (!class_exists('WPH_Widget'))
 		* @since 1.0
 		*/
 
-		function aftercreate_fields($out = "")
+		function after_create_fields($out = "")
 		{
 			return $out;
 		}
