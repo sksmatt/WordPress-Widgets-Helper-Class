@@ -191,7 +191,7 @@ if (!class_exists('WPH_Widget'))
 				// Text Area
 				case 'textarea':
 
-					$out .= '<textarea';
+					$out .= '<textarea ';
 
 					if ( isset($key['class']))
 					$out .= 'class="'.$key['class'].'" ';
@@ -232,7 +232,7 @@ if (!class_exists('WPH_Widget'))
 				// Select Box
 				case 'select':
 
-					$out .= '<select class="wpro-'.$slug.'" id="'.$id.'" name="'.$name.'" ';
+					$out .= '<select id="'.$id.'" name="'.$name.'" ';
 
 					if ( isset($key['class']))
 					$out .= 'class="'.$key['class'].'" ';
