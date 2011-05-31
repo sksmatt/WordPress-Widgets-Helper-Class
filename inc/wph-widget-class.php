@@ -57,7 +57,7 @@ if (!class_exists('WPH_Widget'))
 			if (!empty($options)) $this->options = array_merge($this->options,$options);
 			
 			// call WP_Widget to create the widget
-			parent::WP_Widget($this->slug, $this->label, $this->options);
+			parent::__construct($this->slug, $this->label, $this->options);
 						
 		}
 

@@ -26,7 +26,7 @@ if (!class_exists('My_Recent_Posts_Widget'))
 	class My_Recent_Posts_Widget extends WPH_Widget
 	{
 	
-		function My_Recent_Posts_Widget()
+		function __construct()
 		{
 		
 			// Configure widget array
