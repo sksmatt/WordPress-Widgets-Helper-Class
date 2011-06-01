@@ -13,11 +13,8 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
-// Define path to this plugin
-define('WPH_SAMPLE_WIDGET_PATH', plugin_dir_path(__FILE__));
-
 // Require WPH_Widget Class
-include_once(WPH_SAMPLE_WIDGET_PATH.'inc/wph-widget-class.php');
+include_once(plugin_dir_path(__FILE__).'wph-widget-class.php');
 
 // Check if the custom class exists
 if (!class_exists('My_Recent_Posts_Widget')) 
