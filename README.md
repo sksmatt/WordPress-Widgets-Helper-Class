@@ -6,10 +6,10 @@ A class that extends the built-in WP_Widget Class to provide an easier/fastest w
 
 ### Features
 
-Automatic fields creation
-Validation Methods
-Filter Methods
-Before/After form output methods
+Automatic fields creation  
+Validation Methods  
+Filter Methods  
+Before/After form output methods  
 
 Check the inline comments for more information.
 
