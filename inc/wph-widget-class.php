@@ -6,7 +6,8 @@
 *
 * By @sksmatt | www.mattvarone.com
 *
-* @package WordPress Widgets Helper Class
+* @package WordPress
+* @subpackage WPH Widget Class
 * @author Matt Varone
 * @license GPL
 */
@@ -22,8 +23,8 @@ if (!class_exists('WPH_Widget'))
 		* 
 		* Creates a new widget and sets it's labels, description, fields and options 
 		* 
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		* 
 		* @param array $args
 		*/
@@ -70,8 +71,8 @@ if (!class_exists('WPH_Widget'))
 		* 
 		* Creates the settings form. 
 		* 
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		*/
 
 		function form($instance) 
@@ -85,8 +86,8 @@ if (!class_exists('WPH_Widget'))
 		/** 
 		* Update Fields
 		*  
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		*/
 
 		function update($new_instance, $old_instance) 
@@ -95,20 +96,148 @@ if (!class_exists('WPH_Widget'))
 
 			foreach ($this->fields as $key)
 			{
-				$slug = $key['id']; 
-				$instance[$slug] = strip_tags($new_instance[$slug]);
+				$slug = $key['id'];
+				
+				if ( isset($key['validate']) )
+				{
+					if ( false === $this->validate($key['validate'],$new_instance[$slug]))
+					return $instance;
+				}
+				
+				if ( isset($key['filter']) )
+					$instance[$slug] = $this->filter($key['filter'],$new_instance[$slug]);
+				else
+					$instance[$slug] = strip_tags($new_instance[$slug]);
 			}
 
 			return $instance;
 		}
 
 		/** 
+		* Validate 
+		*  
+		* @package WordPress
+		* @subpackage WPH Widget Class
+		*/
+				
+		function validate($rules,$value)
+		{
+			$rules = explode('|',$rules);
+			
+			foreach ($rules as $rule) 
+			{
+				if (false === $this->do_validation($rule,$value))
+				return false;
+			}
+			
+			return true;
+		}
+		
+		/** 
+		* Filter 
+		*  
+		* @package WordPress
+		* @subpackage WPH Widget Class
+		*/
+				
+		function filter($filters,$value)
+		{
+			$filters = explode('|',$filters); 
+			
+			if (empty($filters) || count($filters) < 1)
+				return $value;
+			
+			foreach ($filters as $filter) 
+				$value = $this->do_filter($filter,$value);
+			
+			return $value;
+		}
+		
+		/** 
+		* Do Validation Rule
+		*  
+		* @package WordPress
+		* @subpackage WPH Widget Class
+		*/
+		
+		function do_validation($rule,$value="")
+		{
+			switch ($rule) 
+			{
+
+				case 'alpha':
+					return ctype_alpha($value);
+				break;
+
+				case 'alpha_numeric':
+					return ctype_alnum($value);
+				break;
+
+				case 'alpha_dash':
+					return preg_match('/^[a-z0-9-_]+$/', $value);
+				break;
+
+				case 'numeric':
+					return ctype_digit((int)$value);
+				break;
+				
+				default:
+					if (method_exists($this,$rule))
+						return $this->$rule($value);
+					else
+						return false;
+				break;
+				
+			}
+		}
+		
+		/** 
+		* Do Filter
+		*  
+		* @package WordPress
+		* @subpackage WPH Widget Class
+		*/
+		
+		function do_filter($filter,$value="")
+		{
+			switch ($filter) 
+			{
+				case 'strip_tags':
+					return strip_tags($value);
+				break;
+
+				case 'wp_strip_all_tags':
+					return wp_strip_all_tags($value);
+				break;
+
+				case 'esc_attr':
+					return esc_attr($value);
+				break;
+
+				case 'esc_url':
+					return esc_url($value);
+				break;
+				
+				case 'esc_textarea':
+					return esc_textarea($value);
+				break;
+				
+				default:
+					if (method_exists($this,$filter))
+						return $this->$filter($value);
+					else
+						return $value;
+				break;
+			}
+		}		
+
+		/** 
 		* Create Fields 
 		* 
 		* Creates each field defined. 
 		* 
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		* 
 		* @param string $out
 		*/
@@ -131,8 +260,8 @@ if (!class_exists('WPH_Widget'))
 		*
 		* Allows to modify code before creating the fields.
 		*  
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		*/
 
 		function before_create_fields($out = "")
@@ -145,8 +274,8 @@ if (!class_exists('WPH_Widget'))
 		* 
 		* Allows to modify code after creating the fields.
 		* 
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		*/
 
 		function after_create_fields($out = "")
@@ -157,8 +286,8 @@ if (!class_exists('WPH_Widget'))
 		/** 
 		* Create Fields
 		*  
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		*/
 
 		function create_field($key,$out = "")
@@ -246,7 +375,7 @@ if (!class_exists('WPH_Widget'))
 						foreach ($key['fields'] as $field => $option) 
 						{
 
-							$out .= '<option value="'.esc_attr($option['value']).'" ';
+							$out .= '<option value="'.esc_attr__($option['value']).'" ';
 
 							if ( esc_attr($value)== $option['value'] )
 							$out .= ' selected="selected" ';
@@ -295,7 +424,7 @@ if (!class_exists('WPH_Widget'))
 			}
 
 			if (isset($key['desc']))
-			$out .= '<br/><small class="description">'._e( $key['desc'], $this->textdomain ).'</small>'; 
+				$out .= '<br/><small class="description">'._( $key['desc'], $this->textdomain ).'</small>'; 
 
 			$out .= '</p>';
 
@@ -306,13 +435,13 @@ if (!class_exists('WPH_Widget'))
 		/** 
 		* Create Label
 		*  
-		* @package WPH Widget Class
-		* @since 1.0
+		* @package WordPress
+		* @subpackage WPH Widget Class
 		*/
 
 		function create_label($name="",$id="")
 		{
-			return '<label for="'.$id.'">'._e( $name, $this->textdomain ).':</label>';
+			return '<label for="'.$id.'">'._( $name, $this->textdomain ).':</label>';
 		}		
 
 	} // class

@@ -56,7 +56,51 @@ if (!class_exists('My_Recent_Posts_Widget'))
 				// class, rows, cols								
 				'class' => 'widefat',	
 				// default value						
-				'std' => __( 'Recent Posts')					
+				'std' => __( 'Recent Posts'),
+				
+				/*
+					Set the field validation type/s
+					///////////////////////////////
+					
+					'alpha_dash'			
+					Returns FALSE if the value contains anything other than alpha-numeric characters, underscores or dashes.
+					
+					'alpha'				
+					Returns FALSE if the value contains anything other than alphabetical characters.
+					
+					'alpha_numeric'		
+					Returns FALSE if the value contains anything other than alpha-numeric characters.
+					
+					'numeric'				
+					Returns FALSE if the value contains anything other than numeric characters.
+					
+					----------
+					
+					You can define custom validation methods. Make sure to return a boolean (TRUE/FALSE).
+					Example:
+					
+					'validate' => 'my_custom_validation',
+					
+					Will call for: $this->my_custom_validation($value_to_validate);					
+					
+				*/
+				
+				'validate' => 'alpha_dash',
+				
+				/*
+				
+					Filter data before entering the DB
+					//////////////////////////////////
+					
+					strip_tags ( default )
+					wp_strip_all_tags
+					esc_attr
+					esc_url
+					esc_textarea
+					
+				*/
+				
+				'filter' => 'strip_tags|esc_attr'	
 				),
 			
 				// Amount Field
@@ -78,12 +122,15 @@ if (!class_exists('My_Recent_Posts_Widget'))
 							'value' => '2' 					
 						),
 						array( 
-							'name'  => __('1 Post'),
+							'name'  => __('3 Posts'),
 							'value' => '3'	
 						)
 					
 						// add more options
-				)),
+				),
+				'validate' => 'my_custom_validation',
+				'filter' => 'strip_tags|esc_attr',
+				),
 			
 				// add more fields
 			
@@ -92,6 +139,18 @@ if (!class_exists('My_Recent_Posts_Widget'))
 			// create widget
 			$this->create_widget( $args );
 		}
+		
+		// Custom validation for this widget specifically
+		
+		function my_custom_validation($value)
+		{
+			if (strlen($value) > 1)
+				return false;
+			else
+				return true;
+		}
+		
+		// Output function
 
 		function widget($args,$instance)
 		{
