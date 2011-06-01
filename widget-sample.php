@@ -140,7 +140,7 @@ if (!class_exists('My_Recent_Posts_Widget'))
 			$this->create_widget( $args );
 		}
 		
-		// Custom validation for this widget specifically
+		// Custom validation for this widget
 		
 		function my_custom_validation($value)
 		{
