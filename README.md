@@ -2,7 +2,7 @@
 
 ## Summary
 
-A class that extends the built-in WP_Widget Class to provide an easier/fastest way to create Widgets.
+A class that extends the built-in WP_Widget class to provide an easier/faster way to create Widgets for WordPress.
 
 ### Features
 
