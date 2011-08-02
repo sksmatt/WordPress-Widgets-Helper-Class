@@ -424,7 +424,7 @@ if (!class_exists('WPH_Widget'))
 			}
 
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'._( $key['desc'], $this->textdomain ).'</small>'; 
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>'; 
 
 			$out .= '</p>';
 
@@ -441,7 +441,7 @@ if (!class_exists('WPH_Widget'))
 
 		function create_label($name="",$id="")
 		{
-			return '<label for="'.$id.'">'._( $name, $this->textdomain ).':</label>';
+			return '<label for="'.$id.'">'.__( $name, $this->textdomain ).':</label>';
 		}		
 
 	} // class
