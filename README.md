@@ -15,3 +15,8 @@ Check the inline comments and sample for more information.
 
 by @sksmatt  
 www.mattvarone.com
+
+Contributors:
+
+Joachim Kudish ( @jkudish )
+Joaquin http://bit.ly/p18bOk

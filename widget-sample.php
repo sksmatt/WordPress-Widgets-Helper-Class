@@ -6,7 +6,7 @@
 * Version: 0.1
 * Author: Matt Varone
 * Author URI: http://twitter.com/sksmatt
-* License: GPL
+* License: GPLv2
 *
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -17,10 +17,10 @@
 include_once(plugin_dir_path(__FILE__).'wph-widget-class.php');
 
 // Check if the custom class exists
-if (!class_exists('My_Recent_Posts_Widget')) 
+if (!class_exists('MV_My_Recent_Posts_Widget')) 
 {
 	// Create custom widget class extending WPH_Widget
-	class My_Recent_Posts_Widget extends WPH_Widget
+	class MV_My_Recent_Posts_Widget extends WPH_Widget
 	{
 	
 		function __construct()
@@ -169,13 +169,13 @@ if (!class_exists('My_Recent_Posts_Widget'))
 	} // class
 
 	// Register widget
-	if ( !function_exists('my_register_widget') )
+	if ( !function_exists('mv_my_register_widget') )
 	{
-		function my_register_widget()
+		function mv_my_register_widget()
 		{
-			register_widget('My_Recent_Posts_Widget');
+			register_widget('MV_My_Recent_Posts_Widget');
 		}
 		
-		add_action('init', 'my_register_widget', 1);
+		add_action('init', 'mv_my_register_widget', 1);
 	}
 }

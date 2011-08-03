@@ -9,7 +9,7 @@
 * @package WordPress
 * @subpackage WPH Widget Class
 * @author Matt Varone
-* @license GPL
+* @license GPLv2
 */
 
 if (!class_exists('WPH_Widget')) 
@@ -120,6 +120,9 @@ if (!class_exists('WPH_Widget'))
 		function validate($rules,$value)
 		{
 			$rules = explode('|',$rules);
+			
+			if (empty($rules) || count($rules) < 1)
+				return true;
 			
 			foreach ($rules as $rule) 
 			{
@@ -244,8 +247,11 @@ if (!class_exists('WPH_Widget'))
 
 			$out = $this->before_create_fields($out);
 
-			foreach ($this->fields as $key) 
-				$out .= $this->create_field($key);
+			if (!empty($this->fields))
+			{
+				foreach ($this->fields as $key) 
+					$out .= $this->create_field($key);	
+			}
 
 			$out = $this->after_create_fields($out);
 
