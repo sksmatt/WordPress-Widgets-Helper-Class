@@ -31,7 +31,6 @@ if (!class_exists('WPH_Widget'))
 
 		function create_widget( $args )
 		{
-			
 			// settings some defaults
 			$defaults = array(
 				'label' => __('My Widget'),
@@ -45,10 +44,10 @@ if (!class_exists('WPH_Widget'))
 			$args = wp_parse_args( $args, $defaults );
 			
 			// extract each arg to its own variable
-			extract( $args, EXTR_SKIP );			
+			extract( $args, EXTR_SKIP );
 			
 			// no fields? then theres not much to do
-			// if (!empty($fields)) return;
+			if (empty($fields)) return;
 						
 			// set the widget vars
 			$this->label   = $label;
@@ -60,8 +59,8 @@ if (!class_exists('WPH_Widget'))
 			
 			// check options
 			$this->options = array('classname' => $this->slug, 'description' => $description);						
-			if (!empty($options)) $this->options = array_merge($this->options, $options);		
-								
+			if (!empty($options)) $this->options = array_merge($this->options,$options);
+			
 			// call WP_Widget to create the widget
 			parent::__construct($this->slug, $this->label, $this->options);
 						
@@ -347,8 +346,6 @@ if (!class_exists('WPH_Widget'))
 
 					$out .= '<p>';
 
-					$out .= $this->create_label($key['name'],$id);
-					
 					$out .= '<input type="checkbox" ';
 
 					if ( isset($key['class']))
@@ -360,6 +357,8 @@ if (!class_exists('WPH_Widget'))
 					$out .= ' checked="checked" ';			
 
 					$out .= ' /> ';
+
+					$out .= $this->create_label($key['name'],$id);
 
 				break;
 
