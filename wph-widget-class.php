@@ -104,7 +104,7 @@ if (!class_exists('WPH_Widget'))
 				if ( isset($key['filter']) )
 					$instance[$slug] = $this->filter($key['filter'],$new_instance[$slug]);
 				else
-					$value	= $std;
+					$instance[$slug] = strip_tags($new_instance[$slug]);
 			}
 
 			return $instance;
@@ -306,7 +306,7 @@ if (!class_exists('WPH_Widget'))
 			if (isset($this->instance[$slug]))
 				$value = empty($this->instance[$slug]) ? '' : strip_tags($this->instance[$slug]);
 			else
-				$value	= empty($this->instance[$slug]) ? $std : strip_tags($this->instance[$slug]);
+				$value	= $std;
 			
 			$id 	= $this->get_field_id($slug);
 			$name 	= $this->get_field_name($slug);		
