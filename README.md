@@ -11,7 +11,7 @@ Validation methods
 Filter methods  
 Before/After form output methods  
 
-Check the inline comments and sample for more information.
+Check the inline comments and Widget sample for more information.
 
 by @sksmatt  
 www.mattvarone.com
