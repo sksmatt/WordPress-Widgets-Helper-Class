@@ -72,7 +72,7 @@ if (!class_exists('MV_My_Recent_Posts_Widget'))
 					Returns FALSE if the value contains anything other than numeric characters.
 					
 					'boolean'				
-					Returns FALSE if the value contains anything other than a boolean value ( true | false).
+					Returns FALSE if the value contains anything other than a boolean value ( true or false ).
 					
 					----------
 					
