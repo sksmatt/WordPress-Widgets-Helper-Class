@@ -71,6 +71,9 @@ if (!class_exists('MV_My_Recent_Posts_Widget'))
 					'numeric'				
 					Returns FALSE if the value contains anything other than numeric characters.
 					
+					'boolean'				
+					Returns FALSE if the value contains anything other than a boolean value ( true | false).
+					
 					----------
 					
 					You can define custom validation methods. Make sure to return a boolean (TRUE/FALSE).
@@ -126,6 +129,19 @@ if (!class_exists('MV_My_Recent_Posts_Widget'))
 						// add more options
 				),
 				'validate' => 'my_custom_validation',
+				'filter' => 'strip_tags|esc_attr',
+				),
+				
+				// Output type checkbox
+				array(
+				'name' => __('Output as list'),							
+				'desc' => __('Wraps posts with the <li> tag.'),
+				'id' => 'list',							
+				'type'=>'checkbox',				
+				// checked by default: true or false
+				'std' => true,
+				// checkbox field value
+				'value' => 'yes',
 				'filter' => 'strip_tags|esc_attr',
 				),
 			

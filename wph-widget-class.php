@@ -181,6 +181,10 @@ if (!class_exists('WPH_Widget'))
 					return ctype_digit($value);
 				break;
 				
+				case 'boolean':
+					return is_bool($value);
+				break;
+				
 				default:
 					if (method_exists($this,$rule))
 						return $this->$rule($value);
@@ -298,7 +302,12 @@ if (!class_exists('WPH_Widget'))
 			// Set fields value
 			$slug	= $key['id'];
 			$std	= isset($key['std']) ? $key['std'] : "";
-			$value	= empty($this->instance[$slug]) ? $std : strip_tags($this->instance[$slug]);
+			
+			if (isset($this->instance[$slug]))
+				$value = empty($this->instance[$slug]) ? '' : strip_tags($this->instance[$slug]);
+			else
+				$value	= empty($this->instance[$slug]) ? $std : strip_tags($this->instance[$slug]);
+			
 			$id 	= $this->get_field_id($slug);
 			$name 	= $this->get_field_name($slug);		
 
@@ -355,8 +364,10 @@ if (!class_exists('WPH_Widget'))
 
 					if ( isset($key['class']))
 					$out .= 'class="'.$key['class'].'" ';
+					
+					$val = (isset($key['value'])) ? $key['value'] : '' ;
 
-					$out .= 'id="'.$id.'" name="'.$name.'" value="'.$std.'" ';
+					$out .= 'id="'.$id.'" name="'.$name.'" value="'.$val.'" ';
 
 					if ( esc_attr($value) == $key['std'] )
 					$out .= ' checked="checked" ';			
