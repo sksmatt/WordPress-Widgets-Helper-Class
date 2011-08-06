@@ -178,7 +178,7 @@ if (!class_exists('WPH_Widget'))
 				break;
 
 				case 'numeric':
-					return ctype_digit((int)$value);
+					return ctype_digit($value);
 				break;
 				
 				default:
