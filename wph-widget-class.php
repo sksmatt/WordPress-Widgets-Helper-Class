@@ -104,7 +104,7 @@ if (!class_exists('WPH_Widget'))
 				if ( isset($key['filter']) )
 					$instance[$slug] = $this->filter($key['filter'],$new_instance[$slug]);
 				else
-					$instance[$slug] = strip_tags($new_instance[$slug]);
+					$value	= $std;
 			}
 
 			return $instance;
