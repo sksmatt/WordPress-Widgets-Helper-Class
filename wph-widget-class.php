@@ -351,7 +351,7 @@ if (!class_exists('WPH_Widget'))
 					
 					$out .= $this->create_label($key['name'],$id);
 					
-					$out .= '<input type="checkbox" ';
+					$out .= ' <input type="checkbox" ';
 
 					if ( isset($key['class']))
 					$out .= 'class="'.$key['class'].'" ';
