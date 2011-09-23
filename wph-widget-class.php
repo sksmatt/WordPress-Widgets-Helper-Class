@@ -332,7 +332,7 @@ if (!class_exists('WPH_Widget'))
 					if ( isset($key['cols']))
 					$out .= 'cols="'.$key['cols'].'" ';
 
-					$out .= 'id="'.$id.'" name="'.$name.'">'.esc_html($value).'" ';
+					$out .= 'id="'.$id.'" name="'.$name.'">'.esc_html($value);
 
 					$out .= '</textarea>';
 
