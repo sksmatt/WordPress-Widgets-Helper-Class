@@ -53,7 +53,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$this->fields  = $fields;
 			
 			// set textdomain for internationalization 
-			( $textdomain ) ? $this->textdomain = $textdomain : $this->textdomain = $this->slug;
+			$this->textdomain = ( $textdomain ) ? $textdomain : $this->slug;
 			
 			// check options
 			$this->options = array( 'classname' => $this->slug, 'description' => $description );						
