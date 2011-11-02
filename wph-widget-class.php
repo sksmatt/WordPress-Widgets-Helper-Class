@@ -7,7 +7,7 @@
 * By @sksmatt | www.mattvarone.com
 *
 * @package		WordPress
-* @subpackage	WPH Widget Class
+* @subpackage		WPH Widget Class
 * @author		Matt Varone
 * @license 		GPLv2
 * @version 		1.4
