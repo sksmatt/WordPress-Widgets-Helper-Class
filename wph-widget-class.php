@@ -32,7 +32,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 
 		function create_widget( $args ) {
 			
-			// settings some defaults
+			// setting some defaults
 			$defaults = array( 
 				'label'        => '',
 				'description'  => '',
