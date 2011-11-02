@@ -13,7 +13,7 @@
 * @version 		1.4
 */
 
-if ( !class_exists( 'WPH_Widget' ) ) 
+if ( ! class_exists( 'WPH_Widget' ) ) 
 {
 
 	class WPH_Widget extends WP_Widget
@@ -34,11 +34,11 @@ if ( !class_exists( 'WPH_Widget' ) )
 			
 			// settings some defaults
 			$defaults = array( 
-				'label' 		=> '',
-				'description' 	=> '',
-				'fields' 		=> array(),
-				'options' 		=> array(),
-				'textdomain' 	=> '',
+				'label'        => '',
+				'description'  => '',
+				'fields'       => array(),
+				'options'      => array(),
+				'textdomain'   => '',
 			 );
 			
 			// parse and merge args with defaults
@@ -57,7 +57,7 @@ if ( !class_exists( 'WPH_Widget' ) )
 			
 			// check options
 			$this->options = array( 'classname' => $this->slug, 'description' => $description );						
-			if ( !empty( $options ) ) $this->options = array_merge( $this->options, $options );
+			if ( ! empty( $options ) ) $this->options = array_merge( $this->options, $options );
 			
 			// call WP_Widget to create the widget
 			parent::__construct( $this->slug, $this->label, $this->options );
@@ -168,7 +168,7 @@ if ( !class_exists( 'WPH_Widget' ) )
 		* @since	1.0
 		*/
 		
-		function do_validation( $rule, $value="" )
+		function do_validation( $rule, $value = "" )
 		{
 			switch ( $rule ) {
 
@@ -234,7 +234,7 @@ if ( !class_exists( 'WPH_Widget' ) )
 		* @since	1.0
 		*/
 		
-		function do_filter( $filter, $value="" )
+		function do_filter( $filter, $value = "" )
 		{
 			switch ( $filter ) 
 			{
@@ -282,7 +282,7 @@ if ( !class_exists( 'WPH_Widget' ) )
 
 			$out = $this->before_create_fields( $out );
 
-			if ( !empty( $this->fields ) ) {
+			if ( ! empty( $this->fields ) ) {
 				foreach ( $this->fields as $key ) 
 					$out .= $this->create_field( $key );	
 			}
@@ -489,7 +489,7 @@ if ( !class_exists( 'WPH_Widget' ) )
 		* @since	1.0
 		*/
 
-		function create_label( $name="", $id="" ) {
+		function create_label( $name = "", $id =" " ) {
 			return '<label for="' . $id . '">' . __( $name, $this->textdomain ) . ':</label>';
 		}		
 
