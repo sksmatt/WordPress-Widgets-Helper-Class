@@ -10,7 +10,7 @@
 * @subpackage		WPH Widget Class
 * @author		Matt Varone
 * @license 		GPLv2
-* @version 		1.4
+* @version 		1.5
 */
 
 if ( ! class_exists( 'WPH_Widget' ) ) 
@@ -31,8 +31,13 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		*/
 
 		function create_widget( $args ) {
+<<<<<<< HEAD
 			
 			// setting some defaults
+=======
+
+			// settings some defaults
+>>>>>>> Updating to 1.5
 			$defaults = array( 
 				'label'        => '',
 				'description'  => '',
@@ -40,28 +45,33 @@ if ( ! class_exists( 'WPH_Widget' ) )
 				'options'      => array(),
 				'textdomain'   => '',
 			 );
-			
+
 			// parse and merge args with defaults
 			$args = wp_parse_args( $args, $defaults );
-			
+
 			// extract each arg to its own variable
 			extract( $args, EXTR_SKIP );			
-						
+
 			// set the widget vars
 			$this->label   = $label;
 			$this->slug    = sanitize_title( $this->label );
 			$this->fields  = $fields;
-			
+
 			// set textdomain for internationalization 
+<<<<<<< HEAD
 			$this->textdomain = ( $textdomain ) ? $textdomain : $this->slug;
 			
+=======
+			( $textdomain ) ? $this->textdomain = $textdomain : $this->textdomain = $this->slug;
+
+>>>>>>> Updating to 1.5
 			// check options
 			$this->options = array( 'classname' => $this->slug, 'description' => $description );						
 			if ( ! empty( $options ) ) $this->options = array_merge( $this->options, $options );
-			
+
 			// call WP_Widget to create the widget
 			parent::__construct( $this->slug, $this->label, $this->options );
-						
+
 		}
 
 		/** 
@@ -97,12 +107,12 @@ if ( ! class_exists( 'WPH_Widget' ) )
 
 			foreach ( $this->fields as $key ) {
 				$slug = $key['id'];
-				
+
 				if ( isset( $key['validate'] ) ) {
 					if ( false === $this->validate( $key['validate'], $new_instance[$slug] ) )
 					return $instance;
 				}
-				
+
 				if ( isset( $key['filter'] ) )
 					$instance[$slug] = $this->filter( $key['filter'], $new_instance[$slug] );
 				else
@@ -121,21 +131,21 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		* @return 	boolean
 		* @since	1.0
 		*/
-				
+
 		function validate( $rules, $value ) {
 			$rules = explode( '|', $rules );
-			
+
 			if ( empty( $rules ) || count( $rules ) < 1 )
 				return true;
-			
+
 			foreach ( $rules as $rule ) {
 				if ( false === $this->do_validation( $rule, $value ) )
 				return false;
 			}
-			
+
 			return true;
 		}
-		
+
 		/** 
 		* Filter 
 		*  
@@ -145,19 +155,19 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		* @return 	void
 		* @since	1.0
 		*/
-				
+
 		function filter( $filters, $value ) {
 			$filters = explode( '|', $filters ); 
-			
+
 			if ( empty( $filters ) || count( $filters ) < 1 )
 				return $value;
-			
+
 			foreach ( $filters as $filter ) 
 				$value = $this->do_filter( $filter, $value );
-			
+
 			return $value;
 		}
-			
+
 		/** 
 		* Do Validation Rule
 		*  
@@ -167,60 +177,60 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		* @return 	boolean
 		* @since	1.0
 		*/
-		
+
 		function do_validation( $rule, $value = "" )
 		{
 			switch ( $rule ) {
 
 				case 'alpha':
-					return ( ! preg_match( "/^( [a-z] )+$/i", $value ) ) ? false : true;
+					return ctype_alpha($value);
 				break;
 
 				case 'alpha_numeric':
-					return ( ! preg_match( "/^( [a-z0-9] )+$/i", $value ) ) ? false : true;
+					return ctype_alnum($value);
 				break;
 
 				case 'alpha_dash':
-					return ( ! preg_match( "/^( [-a-z0-9_-] )+$/i", $value ) ) ? false : true;
+					return preg_match('/^[a-z0-9-_]+$/', $value);
 				break;
 
 				case 'numeric':
-					return is_numeric( $value );
+					return ctype_digit($value);
 				break;
-			
+
 				case 'integer':
 					return ( bool ) preg_match( '/^[\-+]?[0-9]+$/', $value );
 				break;
-			
+
 				case 'boolean':
 					return is_bool( $value );
 				break;
-			
+
 				case 'email':
 					return is_email( $value );
 				break;
-			
+
 				case 'decimal':
 					return ( bool ) preg_match( '/^[\-+]?[0-9]+\.[0-9]+$/', $value );
 				break;
-			
+
 				case 'natural':
 					return ( bool ) preg_match( '/^[0-9]+$/', $value );
 				return;
-			
+
 				case 'natural_not_zero':
 					if ( ! preg_match( '/^[0-9]+$/', $value ) ) return false;
 					if ( $value == 0 ) return false;
 					return true;
 				return;
-			
+
 				default:
 					if ( method_exists( $this, $rule ) )
 						return $this->$rule( $value );
 					else
 						return false;
 				break;
-			
+
 			}
 		}		
 
@@ -233,7 +243,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		* @return 	boolean
 		* @since	1.0
 		*/
-		
+
 		function do_filter( $filter, $value = "" )
 		{
 			switch ( $filter ) 
@@ -253,11 +263,11 @@ if ( ! class_exists( 'WPH_Widget' ) )
 				case 'esc_url':
 					return esc_url( $value );
 				break;
-				
+
 				case 'esc_textarea':
 					return esc_textarea( $value );
 				break;
-				
+
 				default:
 					if ( method_exists( $this, $filter ) )
 						return $this->$filter( $value );
@@ -333,165 +343,271 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		*/
 
 		function create_field( $key, $out = "" ) {
-			// Set fields value
-			$slug	= $key['id'];
-			$std	= isset( $key['std'] ) ? $key['std'] : "";
-			
+
+			/* Set Defaults */
+			$key['std'] = isset( $key['std'] ) ? $key['std'] : "";
+
+			$slug = $key['id'];
+					
 			if ( isset( $this->instance[$slug] ) )
-				$value = empty( $this->instance[$slug] ) ? '' : strip_tags( $this->instance[$slug] );
+				$key['value'] = empty( $this->instance[$slug] ) ? '' : strip_tags( $this->instance[$slug] );
 			else
-				$value	= $std;
-			
-			$id 	= $this->get_field_id( $slug );
-			$name 	= $this->get_field_name( $slug );		
+				unset( $key['value'] );
 
-			if ( $key['type'] != 'checkbox' )
-				$out .= '<p>' . $this->create_label( $key['name'], $id ) . '<br/>';
+			/* Set field id and name  */
+			$key['_id']	= $this->get_field_id( $slug );
+			$key['_name'] = $this->get_field_name( $slug );
 
-			switch ( $key['type'] ) {
-				// Text Field
-				case 'text':
+			/* Set field type */
+			if ( ! isset( $key['type'] ) ) $key['type'] = 'text';
 
-					$out .= '<input type="text" ';
+			/* Prefix method */
+			$field_method = 'create_field_' . str_replace( '-', '_', $key['type'] );
 
-					if ( isset( $key['class'] ) )
-					$out .= 'class="'.$key['class'].'" ';
-
-					$out .= 'id="' . $id . '" name="' . $name . '" value="' . esc_attr__( $value ) . '" ';
-
-					if ( isset( $key['size'] ) )
-					$out .= 'size="'.$key['size'].'" ';				
-
-					$out .= ' />';
-
-				break;
-
-				// Text Area
-				case 'textarea':
-
-					$out .= '<textarea ';
-
-					if ( isset( $key['class'] ) )
-					$out .= 'class="'.$key['class'].'" ';
-
-					if ( isset( $key['rows'] ) )
-					$out .= 'rows="'.$key['rows'].'" ';
-
-					if ( isset( $key['cols'] ) )
-					$out .= 'cols="'.$key['cols'].'" ';
-
-					$out .= 'id="'.$id.'" name="'.$name.'">'.esc_html( $value );
-
-					$out .= '</textarea>';
-
-				break;
-
-				// Checkbox
-				case 'checkbox':
-
-					$out .= '<p>';
-					
-					$out .= $this->create_label( $key['name'],$id );
-					
-					$out .= ' <input type="checkbox" ';
-
-					if ( isset( $key['class'] ) )
-					$out .= 'class="'.$key['class'].'" ';
-					
-					$val = ( isset( $key['value'] ) ) ? $key['value'] : '' ;
-
-					$out .= 'id="'.$id.'" name="'.$name.'" value="'.$val.'" ';
-
-					if ( esc_attr( $value ) == $key['std'] )
-					$out .= ' checked="checked" ';			
-
-					$out .= ' /> ';
-
-				break;
-
-				// Select Box
-				case 'select':
-
-					$out .= '<select id="' . $id . '" name="' . $name . '" ';
-
-					if ( isset( $key['class'] ) )
-					$out .= 'class="' . $key['class'] . '" ';
-
-					$out .= '> ';
-
-						foreach ( $key['fields'] as $field => $option ) 
-						{
-
-							$out .= '<option value="' . esc_attr__( $option['value'] ) . '" ';
-
-							if ( esc_attr( $value )== $option['value'] )
-							$out .= ' selected="selected" ';
-
-							$out .= '> '.esc_html( $option['name'] ).'</option>';
-
-						}
-
-					$out .= ' </select> ';
-
-				break;
-
-				// Select Box with Option Groups
-				case 'select-group':
-
-					$out .= '<select id="' . $id . '" name="' . $name . '" ';
-
-					if ( isset( $key['class'] ) )
-					$out .= 'class="'.$key['class'].'" ';
-
-					$out .= '> ';
-
-						foreach ( $key['fields'] as $group => $fields ) 
-						{
-
-							$out .= '<optgroup label="' . $group . '">';
-
-							foreach ( $fields as $field => $option ) 
-							{
-								$out .= '<option value="' . esc_attr( $option['value'] ) . '" ';
-
-								if ( esc_attr( $value ) == $option['value'] )
-								$out .= ' selected="selected" ';
-
-								$out .= '> ' . esc_html( $option['name'] ) . '</option>';
-							}
-
-							$out .= '</optgroup>';
-
-						}
-
-					$out .= '</select>';		
-
-				break;
-
-			}
-
-			if ( isset( $key['desc'] ) )
-				$out .= '<br/><small class="description">' . __( $key['desc'], $this->textdomain ) . '</small>'; 
-
-			$out .= '</p>';
-
-			return $out;
+			/* Run method */
+			if ( method_exists( $this, $field_method ) )
+				return '<p>'.$this->$field_method( $key ).'<p>';
 
 		}
 
 		/** 
-		* Create Label
+		* Field Text
+		*  
+		* @access 	private
+		* @param 	array
+		* @param 	string
+		* @return 	string
+		* @since	1.5
+		*/
+		function create_field_text( $key, $out = "" )
+		{
+			$out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+
+			$out .= '<input type="text" ';
+
+			if ( isset( $key['class'] ) )
+				$out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+			$value = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+			$out .= 'id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" value="' . esc_attr__( $value ) . '" ';
+
+			if ( isset( $key['size'] ) )
+				$out .= 'size="' . esc_attr( $key['size'] ) . '" ';				
+
+			$out .= ' />';
+			
+			if (isset($key['desc']))
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+
+			return $out;
+		}
+
+		/** 
+		* Field Textarea
+		*  
+		* @access 	private
+		* @param 	array
+		* @param 	string
+		* @return 	string
+		* @since	1.5
+		*/
+		function create_field_textarea( $key, $out = "" )
+		{
+			$out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+
+			$out .= '<textarea ';
+
+			if ( isset( $key['class'] ) )
+				$out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+			if ( isset( $key['rows'] ) )
+				$out .= 'rows="' . esc_attr( $key['rows'] ) . '" ';	
+
+			if ( isset( $key['cols'] ) )
+				$out .= 'cols="' . esc_attr( $key['cols'] ) . '" ';	
+
+			$value = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+			$out .= 'id="'. esc_attr( $key['_id'] ) .'" name="' . esc_attr( $key['_name'] ) . '">'.esc_html( $value );
+
+			$out .= '</textarea>';
+			
+			if (isset($key['desc']))
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+
+			return $out;
+		}
+
+		/** 
+		* Field Checkbox
+		*  
+		* @access 	private
+		* @param 	array
+		* @param 	string
+		* @return 	string
+		* @since	1.5
+		*/
+		function create_field_checkbox( $key, $out = "" )
+		{
+			$out .= $this->create_field_label( $key['name'], $key['_id'] );
+
+			$out .= ' <input type="checkbox" ';
+
+			if ( isset( $key['class'] ) )
+				$out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+			$out .= 'id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" value="1" ';
+			
+			if ( ( isset( $key['value'] ) && $key['value'] == 1 ) OR ( ! isset( $key['value'] ) && $key['std'] == 1 ) )
+				$out .= ' checked="checked" ';			
+
+			$out .= ' /> ';
+			
+			if (isset($key['desc']))
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+
+			return $out;			
+		}
+
+		/** 
+		* Field Select
+		*  
+		* @access 	private
+		* @param 	array
+		* @param 	string
+		* @return 	string
+		* @since	1.5
+		*/
+		function create_field_select( $key, $out = "" )
+		{
+			$out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+
+			$out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+
+			if ( isset( $key['class'] ) )
+				$out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+			$out .= '> ';
+
+			$selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+				foreach ( $key['fields'] as $field => $option ) 
+				{
+
+					$out .= '<option value="' . esc_attr__( $option['value'] ) . '" ';
+
+					if ( esc_attr( $selected ) == $option['value'] )
+						$out .= ' selected="selected" ';
+
+					$out .= '> '.esc_html( $option['name'] ).'</option>';
+
+				}
+
+			$out .= ' </select> ';
+			
+			if (isset($key['desc']))
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+
+			return $out;			
+		}
+
+		/** 
+		* Field Select with Options Group
+		*  
+		* @access 	private
+		* @param 	array
+		* @param 	string
+		* @return 	string
+		* @since	1.5
+		*/		
+		function create_field_select_group( $key, $out = "" )
+		{
+
+			$out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+
+			$out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+
+			if ( isset( $key['class'] ) )
+				$out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+			$out .= '> ';
+
+			$selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+				foreach ( $key['fields'] as $group => $fields ) 
+				{
+
+					$out .= '<optgroup label="' . $group . '">';
+
+					foreach ( $fields as $field => $option ) 
+					{
+						$out .= '<option value="' . esc_attr( $option['value'] ) . '" ';
+
+						if ( esc_attr( $selected ) == $option['value'] )
+							$out .= ' selected="selected" ';
+
+						$out .= '> ' . esc_html( $option['name'] ) . '</option>';
+					}
+
+					$out .= '</optgroup>';
+
+				}
+
+			$out .= '</select>';
+			
+			if (isset($key['desc']))
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+
+			return $out;			
+		}
+		
+		/** 
+		* Field Number
+		*  
+		* @access 	private
+		* @param 	array
+		* @param 	string
+		* @return 	string
+		* @since	1.5
+		*/
+		function create_field_number( $key, $out = "" )
+		{
+			$out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+
+			$out .= '<input type="number" ';
+
+			if ( isset( $key['class'] ) )
+				$out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+			$value = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+			$out .= 'id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" value="' . esc_attr__( $value ) . '" ';
+
+			if ( isset( $key['size'] ) )
+				$out .= 'size="' . esc_attr( $key['size'] ) . '" ';				
+
+			$out .= ' />';
+			
+			if (isset($key['desc']))
+				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+
+			return $out;
+		}
+
+		/** 
+		* Field Label
 		*  
 		* @access 	private
 		* @param 	string
 		* @param 	string
 		* @return 	string
-		* @since	1.0
+		* @since	1.5
 		*/
 
-		function create_label( $name = "", $id =" " ) {
-			return '<label for="' . $id . '">' . __( $name, $this->textdomain ) . ':</label>';
-		}		
+		function create_field_label( $name = "", $id = "" ) {
+			return '<label for="' . esc_attr( $id ). '">' . esc_html( $name ) . ':</label>';
+		}
 
 	} // class
 }

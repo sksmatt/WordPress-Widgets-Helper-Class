@@ -138,10 +138,8 @@ if (!class_exists('MV_My_Recent_Posts_Widget'))
 				'desc' => __('Wraps posts with the <li> tag.'),
 				'id' => 'list',							
 				'type'=>'checkbox',				
-				// checked by default: true or false
-				'std' => true,
-				// checkbox field value
-				'value' => 'yes',
+				// checked by default: 
+				'std' => 1, // 0 or 1
 				'filter' => 'strip_tags|esc_attr',
 				),
 			
