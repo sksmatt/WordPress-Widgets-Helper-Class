@@ -388,7 +388,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$out .= ' />';
 			
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+				$out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
 
 			return $out;
 		}
@@ -424,7 +424,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$out .= '</textarea>';
 			
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+				$out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
 
 			return $out;
 		}
@@ -455,7 +455,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$out .= ' /> ';
 			
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+				$out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
 
 			return $out;			
 		}
@@ -497,7 +497,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$out .= ' </select> ';
 			
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+				$out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
 
 			return $out;			
 		}
@@ -547,7 +547,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$out .= '</select>';
 			
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+				$out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
 
 			return $out;			
 		}
@@ -580,7 +580,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$out .= ' />';
 			
 			if (isset($key['desc']))
-				$out .= '<br/><small class="description">'.__( $key['desc'], $this->textdomain ).'</small>';
+				$out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
 
 			return $out;
 		}
