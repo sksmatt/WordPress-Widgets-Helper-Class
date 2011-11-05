@@ -31,13 +31,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
 		*/
 
 		function create_widget( $args ) {
-<<<<<<< HEAD
-			
-			// setting some defaults
-=======
-
 			// settings some defaults
->>>>>>> Updating to 1.5
 			$defaults = array( 
 				'label'        => '',
 				'description'  => '',
@@ -58,13 +52,9 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			$this->fields  = $fields;
 
 			// set textdomain for internationalization 
-<<<<<<< HEAD
 			$this->textdomain = ( $textdomain ) ? $textdomain : $this->slug;
-			
-=======
 			( $textdomain ) ? $this->textdomain = $textdomain : $this->textdomain = $this->slug;
 
->>>>>>> Updating to 1.5
 			// check options
 			$this->options = array( 'classname' => $this->slug, 'description' => $description );						
 			if ( ! empty( $options ) ) $this->options = array_merge( $this->options, $options );
