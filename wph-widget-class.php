@@ -354,9 +354,12 @@ if ( ! class_exists( 'WPH_Widget' ) )
 			/* Prefix method */
 			$field_method = 'create_field_' . str_replace( '-', '_', $key['type'] );
 
+			/* Check for <p> Class */
+			$p = ( isset($key['class-p']) ) ? '<p class="'.$key['class-p'].'">' : '<p>'; 
+
 			/* Run method */
-			if ( method_exists( $this, $field_method ) )
-				return '<p>'.$this->$field_method( $key ).'<p>';
+			if ( method_exists( $this, $field_method ) ) 
+				return $p.$this->$field_method( $key ).'</p>';
 
 		}
 
