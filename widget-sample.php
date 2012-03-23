@@ -190,6 +190,6 @@ if (!class_exists('MV_My_Recent_Posts_Widget'))
 			register_widget('MV_My_Recent_Posts_Widget');
 		}
 		
-		add_action('init', 'mv_my_register_widget', 1);
+		add_action('widgets_init', 'mv_my_register_widget', 1);
 	}
 }
