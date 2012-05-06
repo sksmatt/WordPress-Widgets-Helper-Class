@@ -16,12 +16,12 @@ Check the inline comments and Widget sample for more information.
 
 ### Roadmap / Wishlist
 
-More / Custom fields creation  
+More Custom fields 
 [Widget Logic](http://wordpress.org/extend/plugins/widget-logic/ "Widget Logic") alike functionality  
 
 ### Version
 
-1.5
+1.6
 
 ### License
 
