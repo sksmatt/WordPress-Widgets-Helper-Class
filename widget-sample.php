@@ -177,7 +177,7 @@ if ( ! class_exists( 'MV_My_Recent_Posts_Widget' ) )
 			
 			$out .= '<p>Hey There! </p>';
 
-			echo $out;
+			echo apply_filters('widget_text', $out);
 		}
 	
 	} // class
