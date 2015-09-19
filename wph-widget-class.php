@@ -1,9 +1,7 @@
 <?php
 /**
-* WordPress Widgets Helper Class
-*
+* Extended WordPress Widgets Helper Class
 * https://github.com/sksmatt/WordPress-Widgets-Helper-Class
-*
 * By @sksmatt | www.mattvarone.com
 *
 * @package      WordPress
@@ -13,7 +11,7 @@
 * @version      1.6
 */
 
-if ( ! class_exists( 'WPH_Widget' ) ) 
+if ( ! class_exists( 'WPH_Widget' ) )
 {
 
     class WPH_Widget extends WP_Widget
@@ -28,6 +26,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @param    array
         * @return   void
         * @since    1.0
+        * add width, height params
         */
 
         function create_widget( $args ) {
@@ -35,27 +34,29 @@ if ( ! class_exists( 'WPH_Widget' ) )
             $defaults = array( 
                 'label'        => '', 
                 'description'  => '', 
+                'width'        => array(),
+                'height'       => array(),
                 'fields'       => array(), 
-                'options'      => array(), 
+                'options'      => array(),
              );
 
-            // parse and merge args with defaults
-            $args = wp_parse_args( $args, $defaults );
+            // parse and merge args with defaults              $args = wp_parse_args( $args, $defaults );
 
             // extract each arg to its own variable
-            extract( $args, EXTR_SKIP );            
+            extract( $args, EXTR_SKIP );
 
             // set the widget vars
             $this->slug    = sanitize_title( $label );
             $this->fields  = $fields;
 
             // check options
-            $this->options = array( 'classname' => $this->slug, 'description' => $description );                        
+            $this->options = array( 'classname' => $this->slug, 'description' => $description );
+
             if ( ! empty( $options ) ) $this->options = array_merge( $this->options, $options );
 
             // call WP_Widget to create the widget
             parent::__construct( $this->slug, $label, $this->options );
-
+             
         }
 
 
@@ -88,7 +89,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @since    1.0
         */
 
-        function update( $new_instance, $old_instance ) {
+        function update( $new_instance, $old_instance ){
             $instance = $old_instance;
             
             $this->before_update_fields();
@@ -392,13 +393,98 @@ if ( ! class_exists( 'WPH_Widget' ) )
             /* Prefix method */
             $field_method = 'create_field_' . str_replace( '-', '_', $key['type'] );
 
+            /* Check for <div> Class - rie added*/
+            //hide the hidden field
+            if ( $field_method != 'create_field_hidden'):
+            $divstart = ( isset( $key['class-div'] ) ) ? '<div class="wrap groupchecked '.$key['class-div'].'">' : '<div class="wrap groupchecked">';
+            else :
+            	$divstart = '<div>';
+            endif;
+
             /* Check for <p> Class */
             $p = ( isset( $key['class-p'] ) ) ? '<p class="'.$key['class-p'].'">' : '<p>'; 
 
-            /* Run method */
-            if ( method_exists( $this, $field_method ) ) 
-                return $p.$this->$field_method( $key ).'</p>';
+            if ( $field_method != 'create_field_group_start') {
+               $divend = '</div>'; 
+            }
+            else
+            {
+                $divend = '<!--eof groupstart-->';
+            }
+            
 
+            /* Run method */
+            /*
+            * Riesurya Note : make sure that grouping doesnt break the layout - 19082013-15:15PM - running out coffee make me little ugly
+            */
+            if ( method_exists( $this, $field_method ) )
+            {
+                if ( $field_method != 'create_field_group_end' ) 
+                {
+                    return $divstart . $this->$field_method( $key ) . $divend ;
+                }
+                else
+                {
+                    return $this->$field_method( $key );
+                }
+            }   
+        }
+
+
+        /** 
+        * Field Info start ( grouping )
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since    1.6
+        */
+        
+        function create_field_group_start( $key, $out = "" ) {
+
+            $out .= '<div class="info">';
+
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+            
+            if ( isset( $key['desc'] ) )
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+            
+            $out .= '</div><!--eof info label-->';
+            
+            return $out;
+        }
+
+        /** 
+        * Field Info end ( grouping )
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since    1.6
+        */
+        
+        function create_field_group_end( $key, $out = "" ) {
+            $out .= '</div><!--eof group end-->';
+            return $out;
+        }
+
+
+
+        /** 
+        * Field Credit
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        */
+        
+        function create_field_credit( $key, $out = "" ) {
+            $out .= '<p class="small">' . $key['name']. '</p>';
+
+            return $out;
         }
 
 
@@ -411,10 +497,12 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @return   string
         * @since    1.5
         */
-        
-        function create_field_text( $key, $out = "" )
-        {
-            $out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+
+        function create_field_text( $key, $out = "" ) {
+
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+
+            $out .= '<div class="inright">';
 
             $out .= '<input type="text" ';
 
@@ -429,9 +517,11 @@ if ( ! class_exists( 'WPH_Widget' ) )
                 $out .= 'size="' . esc_attr( $key['size'] ) . '" ';             
 
             $out .= ' />';
-            
+                                            
+            $out .= '</div>';
+
             if ( isset( $key['desc'] ) )
-                $out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
 
             return $out;
         }
@@ -447,9 +537,8 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @since    1.5
         */
         
-        function create_field_textarea( $key, $out = "" )
-        {
-            $out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+        function create_field_textarea( $key, $out = "" ) {
+            $out .= '<p>' . $this->create_field_label( $key['name'], $key['_id'] ) . '</p>';
 
             $out .= '<textarea ';
 
@@ -469,7 +558,7 @@ if ( ! class_exists( 'WPH_Widget' ) )
             $out .= '</textarea>';
             
             if ( isset( $key['desc'] ) )
-                $out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
 
             return $out;
         }
@@ -485,9 +574,11 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @since    1.5
         */
         
-        function create_field_checkbox( $key, $out = "" )
-        {
+        function create_field_checkbox( $key, $out = "" ) {
+
             $out .= $this->create_field_label( $key['name'], $key['_id'] );
+
+            $out .= '<div class="inright">';
 
             $out .= ' <input type="checkbox" ';
 
@@ -500,9 +591,11 @@ if ( ! class_exists( 'WPH_Widget' ) )
                 $out .= ' checked="checked" ';          
 
             $out .= ' /> ';
-            
+                                
+            $out .= '</div>';
+
             if ( isset( $key['desc'] ) )
-                $out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
 
             return $out;            
         }
@@ -518,12 +611,12 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @since    1.5
         */
         
-        function create_field_select( $key, $out = "" )
-        {
-            $out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+        function create_field_select( $key, $out = "" ) {
 
-            $out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
-
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+                                
+            $out .= '<select id="' . esc_attr( $key['id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+            
             if ( isset( $key['class'] ) )
                 $out .= 'class="' . esc_attr( $key['class'] ) . '" ';
 
@@ -533,22 +626,21 @@ if ( ! class_exists( 'WPH_Widget' ) )
 
                 foreach ( $key['fields'] as $field => $option ) 
                 {
+                    $out .= '<option value="' . esc_attr__( $field ) . '" ';
 
-                    $out .= '<option value="' . esc_attr__( $option['value'] ) . '" ';
-
-                    if ( esc_attr( $selected ) == $option['value'] )
+                    if ( esc_attr( $selected ) == $field )
                         $out .= ' selected="selected" ';
 
-                    $out .= '> '.esc_html( $option['name'] ).'</option>';
+                    $out .= '> '. esc_html( $option ).'</option>';
 
                 }
 
             $out .= ' </select> ';
-            
+                                
             if ( isset( $key['desc'] ) )
-                $out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
+                $out .= '<p class="description"><small>'. esc_attr( $key['desc'] ) .'</small></p>';
 
-            return $out;            
+            return $out;             
         }
 
 
@@ -562,10 +654,9 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @since    1.5
         */    
           
-        function create_field_select_group( $key, $out = "" )
-        {
+        function create_field_select_group( $key, $out = "" ) {
 
-            $out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+            $out .= '<p>' . $this->create_field_label( $key['name'], $key['_id'] ) . '</p>';
 
             $out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
 
@@ -576,34 +667,34 @@ if ( ! class_exists( 'WPH_Widget' ) )
 
             $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
 
-                foreach ( $key['fields'] as $group => $fields ) 
+            foreach ( $key['fields'] as $group => $fields ) 
+            {
+
+                $out .= '<optgroup label="' . $group . '">';
+
+                foreach ( $fields as $field => $option ) 
                 {
+                    $out .= '<option value="' . esc_attr( $option['value'] ) . '" ';
 
-                    $out .= '<optgroup label="' . $group . '">';
+                    if ( esc_attr( $selected ) == $option['value'] )
+                        $out .= ' selected="selected" ';
 
-                    foreach ( $fields as $field => $option ) 
-                    {
-                        $out .= '<option value="' . esc_attr( $option['value'] ) . '" ';
-
-                        if ( esc_attr( $selected ) == $option['value'] )
-                            $out .= ' selected="selected" ';
-
-                        $out .= '> ' . esc_html( $option['name'] ) . '</option>';
-                    }
-
-                    $out .= '</optgroup>';
-
+                    $out .= '> ' . esc_html( $option['name'] ) . '</option>';
                 }
+
+                $out .= '</optgroup>';
+
+            }
 
             $out .= '</select>';
             
             if ( isset( $key['desc'] ) )
-                $out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
 
             return $out;            
         }
-        
-        
+       
+
         /** 
         * Field Number
         *  
@@ -614,11 +705,11 @@ if ( ! class_exists( 'WPH_Widget' ) )
         * @since    1.5
         */
         
-        function create_field_number( $key, $out = "" )
-        {
-            $out .= $this->create_field_label( $key['name'], $key['_id'] ) . '<br/>';
+        function create_field_number( $key, $out = "" ) {
 
-            $out .= '<input type="number" ';
+            $out .= $this->create_field_label( $key['name'], $key['_id'] ) ;
+
+            $out .= '<div class="inright"><input type="number" ';
 
             if ( isset( $key['class'] ) )
                 $out .= 'class="' . esc_attr( $key['class'] ) . '" ';
@@ -630,10 +721,10 @@ if ( ! class_exists( 'WPH_Widget' ) )
             if ( isset( $key['size'] ) )
                 $out .= 'size="' . esc_attr( $key['size'] ) . '" ';             
 
-            $out .= ' />';
+            $out .= ' /></div>';
             
             if ( isset( $key['desc'] ) )
-                $out .= '<br/><small class="description">'.esc_html( $key['desc'] ).'</small>';
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
 
             return $out;
         }
@@ -650,7 +741,418 @@ if ( ! class_exists( 'WPH_Widget' ) )
         */
 
         function create_field_label( $name = "", $id = "" ) {
-            return '<label for="' . esc_attr( $id ). '">' . esc_html( $name ) . ':</label>';
+            $field_method = isset($field_method) ? $field_method : '';
+            if ( $field_method != 'credit') {
+               return '<p><label for="' . esc_attr( $id ). '">' . esc_html( $name ) . '</label></p>';
+            }else{
+               return '<p>' . esc_url( $name ) . '</p>';
+            }
+        }
+
+
+        /** 
+        * Field Radio
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since
+        */
+        
+        function create_field_radio( $key, $out = "" ) {
+
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+            $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+            foreach($key['fields'] as $field => $option)
+            {
+                $out .= '<label><input class="radio" type="radio" id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" value="' . esc_attr__( $option['value'] ) . '" ';
+
+                if ( esc_attr( $selected ) == esc_attr__( $option['value'] ) )
+                $out .= ' checked="checked" ';
+                $out .= '></option>';
+                $out .= $option['name'] . '</label>  '; 
+            }
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out; 
+        }
+
+        /** 
+        * Field Post Types
+        * display as hidden input 
+        * usage : switch on frontend
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since
+        */
+        
+        function create_field_posttype( $key, $out = "" ) {
+
+            $out .= '<p>' . $this->create_field_label( $key['name'], $key['_id'] ) . '</p>';
+
+            // Build taxonomy selection boxes       
+            $posttypes  = get_post_types( array('public' => true ), 'objects' );
+
+                $out .= '<div class="inright">';  
+
+                $out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" '; 
+                $out .= '> ';
+
+                $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+                foreach ( $posttypes as $posttype )
+                {    
+                    if ( ( $posttype->name == 'attachment') or ($posttype->name == 'options') ) continue;
+
+                    $out .= '<option value="' . esc_attr__( $posttype->name ) . '" ';
+
+                    if ( esc_attr( $selected ) == $posttype->name )
+
+                    $out .= ' selected="selected" ';
+
+                    $out .= '> ' . esc_attr( $posttype->labels->singular_name ) . '</option>';
+
+                }
+
+                $out .= ' </select> ';
+
+                $out .= '</div>';
+
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out;            
+        }
+
+
+        /** 
+        * Field Taxonomy
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since
+        */
+        function create_field_taxonomy( $key, $out = "" ) {
+
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+
+            // Build taxonomy selection boxes       
+            $taxes = get_taxonomies('', 'names');
+
+            $out .= '<div class="inright">';
+
+            $out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+
+            $out .= '> ';
+
+            $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+            foreach ( $taxes as $tax )
+
+            {    
+                if( ($tax=='link_category') or ($tax=='nav_menu') or ( ($tax=='post_format') and !isset($options['post_format']) ) ) continue;
+
+                $taxonomy = get_taxonomy($tax);
+
+                $posttypes_obj = $taxonomy->object_type;
+
+                foreach ($posttypes_obj as $posttype_obj => $posttype) {
+
+                $out .= '<option value="' . esc_attr__( $taxonomy->name ) . '" ';
+
+                if ( esc_attr( $selected ) == $taxonomy->name )
+
+                $out .= ' selected="selected" ';
+
+                $out .= '> ' . esc_attr( $taxonomy->label ) . '</option>';
+
+                }
+
+            }
+
+            $out .= ' </select> ';
+
+            $out .= '</div>';
+
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out;            
+        }
+
+
+        /** 
+        * Field Taxonomy Term
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since
+        */
+        
+        function create_field_taxonomyterm( $key, $out = "" ) {
+
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+
+            // Build taxonomy selection boxes       
+            $taxes = get_taxonomies('', 'names');
+
+                $taxterm = array();
+
+                foreach($taxes as $tax):
+
+                    if( ($tax != $key['fields']) ) continue;   
+
+                    $taxonomy = get_taxonomy($tax);
+
+                    $terms = get_terms( $taxonomy->name, array('orderby'=>'name'));
+
+                    $out .= '<div class="inright">';
+
+                    $out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';     
+
+                    $out .= '> ';
+
+                    $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+                        $out .= '<option value="any"';
+
+                        if ( esc_attr( $selected ) == 'any' )
+                               
+                            $out .= ' selected="selected" ';
+
+                            $out .= '>Any Categories</option>';
+
+                        foreach ( $terms as $term )
+                        {
+                            $taxoterms = array ($term->taxonomy , $term->name);
+                           
+                            //make array as pattern ( $term->taxonomy , $term->name);
+
+                            $out .= '<option value="' . esc_attr__( $term->slug ) . '" ';
+
+                            if ( esc_attr( $selected ) == $term->slug )
+                               
+                            $out .= ' selected="selected" ';
+
+                            $out .= '> ' . esc_html( $term->name ) . ' </option>';
+                        }
+
+                    $out .= ' </select> ';
+
+                    $out .= '</div>';
+
+                endforeach;
+
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out;            
+        }
+
+        /** 
+        * Pages Select
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since
+        */
+        
+        function create_field_pages( $key, $out = "" ) {
+        
+            $out .= '<p>' . $this->create_field_label( $key['name'], $key['_id'] ) . '</p>';
+
+            $out .= '<select id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+
+            if ( isset( $key['class'] ) )
+                
+            $out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+            $out .= '> ';
+
+            $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+            $pages = get_pages('sort_column=post_parent,menu_order');
+
+                foreach ( $pages as $page )
+                {
+                    $out .= '<option value="' . esc_attr__( $page->ID ) . '" ';
+
+                        if ( esc_attr( $selected ) == $page->ID )
+
+                        $out .= ' selected="selected" ';
+
+                    $out .= '>'.esc_html( $page->post_title ).'</option>';
+                }
+
+            $out .= ' </select> ';
+            
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out;
+
+        }
+
+        /** 
+        * PostCombi Select from spesific taxonomy
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since
+        */
+        
+        function create_field_postcombi( $key, $out = "" ) {
+
+            $out .= $this->create_field_label( $key['name'], $key['_id'] );
+
+            $out .= '<div class="inright">';
+
+            $out .= '<select size="1" id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+
+            if ( isset( $key['class'] ) )
+
+            $out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+            $out .= '> ';
+
+            $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+            //Pull all the post from spesific post type into an array
+            $options_posts = array();
+
+            $args = array(
+            'post_type'         => $key['fields'], //change this from fields key
+            'order'             => 'ASC',
+            'orderby'           => 'title',
+            'posts_per_page'    => -1,
+            );
+
+            $options_posts_obj = get_posts($args);
+
+            //$out .= '<option value="">' . $key['selecttrans'] . '</option>'; //causing problem on validation and std
+
+            foreach ( $options_posts_obj as $field_ID ):
+
+            $out .= '<option value="' . esc_attr__( $field_ID->ID ) . '" ';
+
+                if ( esc_attr( $selected ) == $field_ID->ID )
+
+                $out .= ' selected="selected" ';
+
+                $out .= '>'.esc_html( $field_ID->post_title ).'</option>';
+
+            endforeach;
+            
+            $out .= ' </select> ';
+
+            $out .= ' </div> ';
+            
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out;            
+        }
+ 
+        
+        /** 
+        * Field Hidden Input
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since    
+        */
+        
+        function create_field_hidden( $key, $out = "" ) {
+
+            $out .= '<input type="hidden" ';
+            $value = isset( $key['value'] ) ? $key['value'] : $key['std'];
+            $out .= 'id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" value="' . esc_attr__( $key['fields'] ) . '" ';
+            $out .= ' />';        
+            return $out;
+        }
+        
+        /** 
+        * Post Select from spesific taxonomy
+        *  
+        * @access   private
+        * @param    array
+        * @param    string
+        * @return   string
+        * @since    
+        */
+        
+        function create_field_post( $key, $out = "" ) {
+
+            $out .= '<p>' . $this->create_field_label( $key['name'], $key['_id'] ) . '</p>';
+
+            $out .= '<select size="1" id="' . esc_attr( $key['_id'] ) . '" name="' . esc_attr( $key['_name'] ) . '" ';
+
+            if ( isset( $key['class'] ) )
+
+            $out .= 'class="' . esc_attr( $key['class'] ) . '" ';
+
+            $out .= '> ';
+
+            $selected = isset( $key['value'] ) ? $key['value'] : $key['std'];
+
+            //Pull all the post from spesific post type into an array
+
+            $options_posts = array();
+
+            $args = array(
+            'post_type' => $key['fields'], //change this from fields key
+            'order' => 'ASC',
+            'orderby' => 'title',
+            'posts_per_page' => -1,
+            );
+
+            $options_posts_obj = get_posts($args);
+
+
+            $out .= '<option value="">-Select-</option>'; 
+
+                foreach ( $options_posts_obj as $field_ID )
+
+                {
+                   
+                $out .= '<option value="' . esc_attr__( $field_ID->ID ) . '" ';
+
+                    if ( esc_attr( $selected ) == $field_ID->ID )
+
+                    $out .= ' selected="selected" ';
+
+                    $out .= '>'.esc_html( $field_ID->post_title ).'</option>';
+                    // $out .= '>'.esc_html( $field_ID->post_title ).'- ( posttype : Post )</option>';
+                }
+
+            $out .= ' </select> ';
+            
+            if ( isset( $key['desc'] ) )
+
+                $out .= '<p class="description"><small>' . esc_html( $key['desc'] ) . '</small></p>';
+
+            return $out;            
         }
 
     } // class
