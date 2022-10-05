@@ -1,5 +1,9 @@
 #  WordPress Widgets Helper Class
 
+**This repository is deprecated; No further Issues or Pull Requests will be considered or approved.**
+
+Alternative fork by @Mte90: https://github.com/WPBP/Widgets-Helper
+
 ## Summary
 
 A class that extends the built-in WP_Widget class to provide an easier/faster way to create Widgets for WordPress.
